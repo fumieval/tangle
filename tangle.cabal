@@ -4,9 +4,9 @@ cabal-version:       2.4
 
 name:                tangle
 version:             0
-synopsis:            Tangle: heterogeneous memoization monad
--- description:
--- bug-reports:
+synopsis:            HKD record builder
+description:         See README.md for details
+bug-reports:         https://github.com/fumieval/tangle/issues
 license:             BSD-3-Clause
 license-file:        LICENSE
 author:              Fumiaki Kinoshita
@@ -15,6 +15,10 @@ copyright: Copyright(c) 2020 Fumiaki Kinoshita
 category: Monad
 extra-source-files:  CHANGELOG.md
 tested-with: GHC == 8.8.1, ghc == 8.6.5
+
+source-repository head
+  type: git
+  location: https://github.com/fumieval/tangle.git
 
 library
   exposed-modules:     Control.Monad.Tangle
