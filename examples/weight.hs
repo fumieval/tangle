@@ -38,4 +38,5 @@ buildInfo = Info
   }
 
 main :: IO ()
-main = evalTangleT (hitch bmi) buildInfo >>= print
+main = evalTangleT go buildInfo >>= print where
+  go = (,) <$> hitch bmi <*> hitch isHealthy

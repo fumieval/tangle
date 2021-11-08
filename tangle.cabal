@@ -35,3 +35,10 @@ executable weight
   ghc-options: -Wall -Wcompat
   build-depends:       base >= 4.12 && <5, transformers, barbies, lens, tangle
   main-is: weight.hs
+
+executable mono
+  hs-source-dirs: examples
+  default-language:    Haskell2010
+  ghc-options: -Wall -Wcompat
+  build-depends:       base >= 4.12 && <5, transformers, containers
+  main-is: mono.hs
