@@ -1,4 +1,5 @@
 {-# LANGUAGE RankNTypes, LambdaCase, DeriveFunctor, BangPatterns #-}
+{-# LANGUAGE DerivingVia #-}
 module Control.Monad.Tangle
   (TangleFT(..), hitchF
   , evalTangleFT
@@ -20,6 +21,7 @@ import Control.Monad.Trans.Class
 import Control.Monad.IO.Class
 import Data.Functor.Identity
 import Data.Functor.Compose
+import Data.Monoid
 
 -- | 'TangleFT' is a higher-kinded heterogeneous memoisation monad transformer.
 -- @t@ represents the shape of the underlying data structure, and @f@ is the wrapper type of each field.
@@ -29,6 +31,7 @@ newtype TangleFT t f m a = TangleFT
     -> t (Compose Maybe f)
     -> m (t (Compose Maybe f), a) }
   deriving Functor
+  deriving (Semigroup, Monoid) via Ap (TangleFT t f m) a
 
 instance Monad m => Applicative (TangleFT t f m) where
   pure a = TangleFT $ \_ mem -> pure (mem, a)
@@ -36,12 +39,6 @@ instance Monad m => Applicative (TangleFT t f m) where
     >>= \(mem', f) -> (\(mem'', a) -> (mem'', f a)) <$> n ts mem'
 instance Monad m => Monad (TangleFT t f m) where
   TangleFT m >>= k = TangleFT $ \ts mem -> m ts mem >>= \(mem', a) -> runTangleFT (k a) ts mem'
-
-instance (Monad m, Semigroup a) => Semigroup (TangleFT t f m a) where
-  (<>) = liftA2 (<>)
-
-instance (Monad m, Monoid a) => Monoid (TangleFT t f m a) where
-  mempty = pure mempty
 
 instance MonadTrans (TangleFT t f) where
   lift m = TangleFT $ \_ mem -> fmap ((,) mem) m
