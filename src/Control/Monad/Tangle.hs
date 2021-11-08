@@ -5,6 +5,7 @@ module Control.Monad.Tangle
   , liftTangles
   , blank
   , hitch
+  , gather
   , TangleF
   , evalTangleF
   , TangleT
@@ -47,6 +48,10 @@ instance MonadTrans (TangleFT t f) where
 
 instance MonadIO m => MonadIO (TangleFT t f m) where
   liftIO m = TangleFT $ \_ mem -> fmap ((,) mem) (liftIO m)
+
+-- | Collect all results in the tangle.
+gather :: (TraversableB t, Monad m) => TangleFT t f m (t f)
+gather = TangleFT $ \env prev -> runTangleFT (btraverse getCompose env) env prev
 
 -- | Obtain a value from the tangle. The result gets memoised.
 hitchF :: Monad m
